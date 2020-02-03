@@ -1,6 +1,31 @@
 # shopping_cart.py
 
 #from pprint import pprint
+import pandas as pd
+import datetime
+
+stats = pd.read_csv("/Users/ahmadwilson/OneDrive/PythonProjects/shopping-cart/products.csv")
+newDict = stats.to_dict("records")
+tester = newDict[1]
+identifier = "-1"
+#matchingProduct = p for p in newDict if p["id"] = identifier
+newList = []
+matching_products = []
+#breakpoint()
+#while identifier != "0":
+identifier = input("Please input a product identifier. Enter 0 when finished.")
+matching_products = [p for p in newDict if str(p["id"]) == str(identifier)]
+print (matching_products)
+matching_product = matching_products[0]
+print (matching_product["name"])
+
+#print(newList)
+        
+        #print("Inside for loop")
+        #print
+    #newList.append(newDict.)
+    
+    
 
 products = [
     {"id":1, "name": "Chocolate Sandwich Cookies", "department": "snacks", "aisle": "cookies cakes", "price": 3.50},
@@ -25,7 +50,42 @@ products = [
     {"id":20, "name": "Pomegranate Cranberry & Aloe Vera Enrich Drink", "department": "beverages", "aisle": "juice nectars", "price": 4.25}
 ] # based on data from Instacart: https://www.instacart.com/datasets/grocery-shopping-2017
 
-print(products)
+#print(products)
 # pprint(products)
 
+
+
+
+print("---------------------------------")
+print("GEORGETOWN GROCERS")
+print("WWW.GEORGETOWN-GROCERS.COM")
+print("---------------------------------")
+print("CHECKOUT AT: Insert DateTime Object    " )
+print("---------------------------------")
+print("SELECTED PRODUCTS:")
+
+
+
 # TODO: write some Python code here to produce the desired output
+
+#> ---------------------------------
+#> GREEN FOODS GROCERY
+#> WWW.GREEN-FOODS-GROCERY.COM
+#> ---------------------------------
+#> CHECKOUT AT: 2019-06-06 11:31 AM
+#> ---------------------------------
+#> SELECTED PRODUCTS:
+#>  ... Chocolate Sandwich Cookies ($3.50)
+#>  ... Cut Russet Potatoes Steam N' Mash ($4.25)
+#>  ... Dry Nose Oil ($21.99)
+#>  ... Cut Russet Potatoes Steam N' Mash ($4.25)
+#>  ... Cut Russet Potatoes Steam N' Mash ($4.25)
+#>  ... Mint Chocolate Flavored Syrup ($4.50)
+#>  ... Chocolate Fudge Layer Cake ($18.50)
+#> ---------------------------------
+#> SUBTOTAL: $61.24
+#> TAX: $5.35
+#> TOTAL: $66.59
+#> ---------------------------------
+#> THANKS, SEE YOU AGAIN SOON!
+#> ---------------------------------
