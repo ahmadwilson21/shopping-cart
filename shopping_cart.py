@@ -13,14 +13,20 @@ identifier = "-1"
 #matching_products = []
 #breakpoint()
 #while identifier != "0":
+id_list = [str(d["id"]) for d in newDict]
+print (id_list)
+
 while (True):
-    identifier = input("Please input a product identifier. Enter 0 when finished.")
+    identifier = input("Please input a product identifier. Enter 0 when finished.\t")
     if (identifier == "0"):
         break
+    elif identifier not in id_list:
+        print("Sorry you entered the wrong ID. Try again")
     else:
         matching_products = [p for p in newDict if str(p["id"]) == str(identifier)]
         #print (matching_products)
         matching_product = matching_products[0]
+        product_list = matching_products
         print (str(matching_product["id"]) + " "+ str(matching_product["name"])+ " " + str(matching_product["price"])+ " ")
 
 #print(newList)
