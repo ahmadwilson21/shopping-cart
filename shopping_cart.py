@@ -9,15 +9,19 @@ newDict = stats.to_dict("records")
 tester = newDict[1]
 identifier = "-1"
 #matchingProduct = p for p in newDict if p["id"] = identifier
-newList = []
-matching_products = []
+#newList = []
+#matching_products = []
 #breakpoint()
 #while identifier != "0":
-identifier = input("Please input a product identifier. Enter 0 when finished.")
-matching_products = [p for p in newDict if str(p["id"]) == str(identifier)]
-print (matching_products)
-matching_product = matching_products[0]
-print (matching_product["name"])
+while (True):
+    identifier = input("Please input a product identifier. Enter 0 when finished.")
+    if (identifier == "0"):
+        break
+    else:
+        matching_products = [p for p in newDict if str(p["id"]) == str(identifier)]
+        #print (matching_products)
+        matching_product = matching_products[0]
+        print (str(matching_product["id"]) + " "+ str(matching_product["name"])+ " " + str(matching_product["price"])+ " ")
 
 #print(newList)
         
