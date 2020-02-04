@@ -76,34 +76,42 @@ products = [
 #print(products)
 # pprint(products)
 
+def receipt_generator(list):
 
 
+    now = datetime.datetime.now()
+    #now = datetime.datetime.strftime("%Y, %m", "%d", "%I", "%M", "%p")
 
-print("---------------------------------")
-print("GEORGETOWN GROCERS")
-print("WWW.GEORGETOWN-GROCERS.COM")
-print("---------------------------------")
-print("CHECKOUT AT: Insert DateTime Object    " )
-print("---------------------------------")
-print("SELECTED PRODUCTS:")
 
-price = 0
-#price = Decimal(price)
-#price = to_usd(price)
-for p in product_list:
-    print(p["name"] + " (" + to_usd(p["price"]) +")")
-    price = price + p["price"]
+    print("---------------------------------")
+    print("GEORGETOWN GROCERS")
+    print("WWW.GEORGETOWN-GROCERS.COM")
+    print("---------------------------------")
+    print("CHECKOUT AT: ", now.strftime("%Y-%m-%d %I:%M %p"))
+    print("---------------------------------")
+    print("SELECTED PRODUCTS:")
 
-#price = to_usd(price)
-#price = round(price,2)
-print("---------------------------------")
-print("SUBTOTAL: " + to_usd(price))
-#tax_price = Decimal
-tax_price = price* (.07)
-#tax_price = to_usd(tax_price)
-print("TAX: " + to_usd(tax_price))
-print("TOTAL: " + to_usd(price+tax_price))
+    price = 0
+    #price = Decimal(price)
+    #price = to_usd(price)
+    for p in product_list:
+        print("... " + p["name"] + " (" + to_usd(p["price"]) +")")
+        price = price + p["price"]
 
+    #price = to_usd(price)
+    #price = round(price,2)
+    print("---------------------------------")
+    print("SUBTOTAL: " + to_usd(price))
+    #tax_price = Decimal
+    tax_price = price* (.085)
+    #tax_price = to_usd(tax_price)
+    print("TAX: " + to_usd(tax_price))
+    print("TOTAL: " + to_usd(price+tax_price))
+    print("---------------------------------")
+    print("THANKS, SEE YOU AGAIN SOON")
+    print("---------------------------------")
+
+receipt_generator(product_list)
 # TODO: write some Python code here to produce the desired output
 
 #> ---------------------------------
