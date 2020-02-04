@@ -3,6 +3,18 @@
 #from pprint import pprint
 import pandas as pd
 import datetime
+from decimal import Decimal
+
+
+def to_usd(my_price):
+    """
+    Converts a numeric value to usd-formatted string, for printing and display purposes.
+    Source: https://github.com/prof-rossetti/intro-to-python/blob/master/notes/python/datatypes/numbers.md#formatting-as-currency
+    Param: my_price (int or float) like 4000.444444
+    Example: to_usd(4000.444444)
+    Returns: $4,000.44
+    """
+    return f"${my_price:,.2f}" #> $12,000.71
 
 stats = pd.read_csv("/Users/ahmadwilson/OneDrive/PythonProjects/shopping-cart/products.csv")
 newDict = stats.to_dict("records")
@@ -14,8 +26,8 @@ identifier = "-1"
 #breakpoint()
 #while identifier != "0":
 id_list = [str(d["id"]) for d in newDict]
-print (id_list)
-
+#print (id_list)
+product_list=[]
 while (True):
     identifier = input("Please input a product identifier. Enter 0 when finished.\t")
     if (identifier == "0"):
@@ -26,10 +38,11 @@ while (True):
         matching_products = [p for p in newDict if str(p["id"]) == str(identifier)]
         #print (matching_products)
         matching_product = matching_products[0]
-        product_list = matching_products
-        print (str(matching_product["id"]) + " "+ str(matching_product["name"])+ " " + str(matching_product["price"])+ " ")
+        product_list.append(matching_product)
 
-#print(newList)
+        #print (str(matching_product["id"]) + " "+ str(matching_product["name"])+ " " + str(matching_product["price"])+ " ")
+
+
         
         #print("Inside for loop")
         #print
@@ -74,7 +87,22 @@ print("CHECKOUT AT: Insert DateTime Object    " )
 print("---------------------------------")
 print("SELECTED PRODUCTS:")
 
+price = 0
+#price = Decimal(price)
+#price = to_usd(price)
+for p in product_list:
+    print(p["name"] + " (" + to_usd(p["price"]) +")")
+    price = price + p["price"]
 
+#price = to_usd(price)
+#price = round(price,2)
+print("---------------------------------")
+print("SUBTOTAL: " + to_usd(price))
+#tax_price = Decimal
+tax_price = price* (.07)
+#tax_price = to_usd(tax_price)
+print("TAX: " + to_usd(tax_price))
+print("TOTAL: " + to_usd(price+tax_price))
 
 # TODO: write some Python code here to produce the desired output
 
