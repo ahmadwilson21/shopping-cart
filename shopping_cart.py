@@ -1,6 +1,8 @@
 # shopping_cart.py
 
 #from pprint import pprint
+#from send_email import*
+
 import pandas as pd
 import datetime
 from decimal import Decimal
@@ -77,9 +79,46 @@ products = [
 # pprint(products)
 
 def receipt_generator(list):
-
-
     now = datetime.datetime.now()
+    a = """---------------------------------\n"""
+    a= a+ "GEORGETOWN GROCERS\n"
+    a = a+ "WWW.GEORGETOWN-GROCERS.COM\n---------------------------------\n"
+    a = a + "CHECKOUT AT: " + now.strftime("%Y-%m-%d %I:%M %p" + "\n")
+    a = a + "---------------------------------\nSELECTED PRODUCTS:"
+
+    price = 0
+
+    for p in product_list:
+        a= a+("\n... " + p["name"] + " (" + to_usd(p["price"]) +")")
+        price = price + p["price"]
+    
+    a= a+"\n---------------------------------\nSUBTOTAL: "
+    a= a+ to_usd(price)
+
+    """
+    print("---------------------------------")
+    print("SUBTOTAL: " + to_usd(price))
+    """
+    #tax_price = Decimal
+    tax_price = price* (.085)
+    #tax_price = to_usd(tax_price)
+    a = a + "\nTAX: " + to_usd(tax_price)
+
+    """
+    print("TAX: " + to_usd(tax_price))
+    """
+
+    a = a + "\nTOTAL: " + to_usd(price+tax_price)
+    a = a + "\n---------------------------------"
+    a = a + "\nTHANKS, SEE YOU AGAIN SOON"
+    a = a + "\n---------------------------------"
+
+    """
+    print("TOTAL: " + to_usd(price+tax_price))
+    print("---------------------------------")
+    print("THANKS, SEE YOU AGAIN SOON")
+    print("---------------------------------")
+    
     #now = datetime.datetime.strftime("%Y, %m", "%d", "%I", "%M", "%p")
 
 
@@ -90,28 +129,39 @@ def receipt_generator(list):
     print("CHECKOUT AT: ", now.strftime("%Y-%m-%d %I:%M %p"))
     print("---------------------------------")
     print("SELECTED PRODUCTS:")
-
+    """
+    """
     price = 0
     #price = Decimal(price)
     #price = to_usd(price)
+    
     for p in product_list:
         print("... " + p["name"] + " (" + to_usd(p["price"]) +")")
         price = price + p["price"]
-
+    
+    tax_price = price* (.085)
     #price = to_usd(price)
     #price = round(price,2)
     print("---------------------------------")
     print("SUBTOTAL: " + to_usd(price))
     #tax_price = Decimal
-    tax_price = price* (.085)
+    
     #tax_price = to_usd(tax_price)
     print("TAX: " + to_usd(tax_price))
     print("TOTAL: " + to_usd(price+tax_price))
     print("---------------------------------")
     print("THANKS, SEE YOU AGAIN SOON")
     print("---------------------------------")
+    """
+    return a
 
-receipt_generator(product_list)
+#receipt_generator(product_list)
+#print ("STARTING A ")
+print (receipt_generator(product_list))
+#print("---------------------------------")
+#print("Generating receipt to email")
+#print("---------------------------------")
+#sendEmail("asw99@georgetown.edu", receipt_generator(product_list))
 # TODO: write some Python code here to produce the desired output
 
 #> ---------------------------------
