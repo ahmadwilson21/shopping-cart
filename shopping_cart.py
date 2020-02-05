@@ -6,7 +6,9 @@
 import pandas as pd
 import datetime
 from decimal import Decimal
+from send_email import sendEmail
 
+#load_dotenv()
 
 def to_usd(my_price):
     """
@@ -158,6 +160,13 @@ def receipt_generator(list):
 #receipt_generator(product_list)
 #print ("STARTING A ")
 print (receipt_generator(product_list))
+email_choice = input("Would you like to receive a receipt via email?\nEnter y/n\t")
+
+if (email_choice == "y"):
+    customer_email = input("Enter your email address:\t")
+    sendEmail(customer_email, receipt_generator(product_list))
+else:
+    print("Have a great day!!!")
 #print("---------------------------------")
 #print("Generating receipt to email")
 #print("---------------------------------")

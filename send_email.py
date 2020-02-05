@@ -22,10 +22,11 @@ def sendEmail(toEmail, prompt):
     # COMPILE REQUEST PARAMETERS (PREPARE THE EMAIL)
 
     from_email = Email(MY_EMAIL_ADDRESS)
-    to_email = toEmail
+    to_email = Email(toEmail)
     subject = "Georgetown-Grocers Receipt"
     message_text = prompt
     content = Content("text/plain", message_text)
+    #breakpoint()
     mail = Mail(from_email, subject, to_email, content)
 
     # ISSUE REQUEST (SEND EMAIL)
