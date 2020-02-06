@@ -21,6 +21,8 @@ def sendEmail(toEmail, prompt):
 
     # COMPILE REQUEST PARAMETERS (PREPARE THE EMAIL)
 
+        
+
     from_email = Email(MY_EMAIL_ADDRESS)
     to_email = Email(toEmail)
     subject = "Georgetown-Grocers Receipt"
@@ -28,6 +30,9 @@ def sendEmail(toEmail, prompt):
     content = Content("text/plain", message_text)
     #breakpoint()
     mail = Mail(from_email, subject, to_email, content)
+    #personalization = Personalization()
+    #mail.personalizations[0].add_bcc(Email(input("Input bcc email\t")))
+    #mail.add_personalization(personalization)
 
     # ISSUE REQUEST (SEND EMAIL)
 

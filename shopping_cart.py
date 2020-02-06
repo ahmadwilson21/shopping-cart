@@ -181,6 +181,7 @@ def receipt_generator(list):
     print("---------------------------------")
     """
     return a
+    
 
 #receipt_generator(product_list)
 #print ("STARTING A ")

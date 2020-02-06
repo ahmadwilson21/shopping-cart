@@ -8,14 +8,14 @@ from oauth2client.service_account import ServiceAccountCredentials
 #load_dotenv()
 
 def get_spreadsheet():
-    DOCUMENT_ID = os.environ.get("NEW_SHEET_ID", "OOPS")
+    DOCUMENT_ID = os.environ.get("GOOGLE_SHEET_ID", "OOPS")
     SHEET_NAME = os.environ.get("SHEET_NAME", "Products")
 
     #
     # AUTHORIZATION
     #
-
-    CREDENTIALS_FILEPATH = os.path.join(os.path.dirname(__file__), "auth", "sheets-test-267401-a693d4ecb439.json")
+    json_path = os.environ.get("SHEETS_JSON","OOPS")
+    CREDENTIALS_FILEPATH = json_path
 
     AUTH_SCOPE = [
         "https://www.googleapis.com/auth/spreadsheets", #> Allows read/write access to the user's sheets and their properties.
