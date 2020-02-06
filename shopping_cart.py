@@ -5,10 +5,13 @@
 
 import pandas as pd
 import datetime
+import os
+import csv
 from decimal import Decimal
-from send_email import sendEmail
+from send_email import *
+from spreadsheet import *
 
-#load_dotenv()
+load_dotenv()
 
 def to_usd(my_price):
     """
@@ -20,8 +23,19 @@ def to_usd(my_price):
     """
     return f"${my_price:,.2f}" #> $12,000.71
 
-stats = pd.read_csv("/Users/ahmadwilson/OneDrive/PythonProjects/shopping-cart/products.csv")
-newDict = stats.to_dict("records")
+
+#OLD WAY OF USING os environ files
+
+
+#fileName = os.environ.get("CSV_FILE_PATH")
+#stats = pd.read_csv(fileName)
+#newDict = stats.to_dict("records")
+
+
+sheets_products = get_spreadsheet()
+newDict = [d for d in sheets_products]
+
+
 tester = newDict[1]
 identifier = "-1"
 #matchingProduct = p for p in newDict if p["id"] = identifier
@@ -89,6 +103,7 @@ def receipt_generator(list):
     a = a + "---------------------------------\nSELECTED PRODUCTS:"
 
     price = 0
+    price = float(price)
 
     for p in product_list:
         a= a+("\n... " + p["name"] + " (" + to_usd(p["price"]) +")")
@@ -102,7 +117,16 @@ def receipt_generator(list):
     print("SUBTOTAL: " + to_usd(price))
     """
     #tax_price = Decimal
-    tax_price = price* (.085)
+    #load_dotenv()
+    tax_rate= " "
+    tax_rate = os.environ.get("CUSTOM_TAX")
+    #tax
+    #tax_rate = str(tax_rate)
+    #breakpoint()
+    #breakpoint()
+    tax_rate = float(tax_rate)
+    
+    tax_price = price* (tax_rate)
     #tax_price = to_usd(tax_price)
     a = a + "\nTAX: " + to_usd(tax_price)
 
@@ -148,6 +172,7 @@ def receipt_generator(list):
     print("SUBTOTAL: " + to_usd(price))
     #tax_price = Decimal
     
+
     #tax_price = to_usd(tax_price)
     print("TAX: " + to_usd(tax_price))
     print("TOTAL: " + to_usd(price+tax_price))
@@ -167,6 +192,8 @@ if (email_choice == "y"):
     sendEmail(customer_email, receipt_generator(product_list))
 else:
     print("Have a great day!!!")
+
+
 #print("---------------------------------")
 #print("Generating receipt to email")
 #print("---------------------------------")

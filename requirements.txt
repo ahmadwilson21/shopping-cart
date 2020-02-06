@@ -2,3 +2,5 @@ python-dotenv
 sendgrid==5.6.0
 twilio
 tweepy
+gspread 
+oauth2client

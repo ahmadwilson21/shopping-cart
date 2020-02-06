@@ -3,3 +3,6 @@
 Setup:
 conda create -n shopping-env python=3.7 # (first time only)
 conda activate shopping-env
+
+pip install -r requirements.txt
+
