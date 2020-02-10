@@ -109,7 +109,7 @@ while (True):
         #print (matching_products)
         matching_product = matching_products[0]
         if matching_product["price_per"] == "pound":
-            num_items = (input("Enter pounds of " + matching_product["name"] + "\t"))
+            num_items = (input("Enter pounds of " + matching_product["name"] + "as an integer or float\t"))
            # while num_items.isnumeric()!= True: #include decimal of this
             matching_product["price"] = matching_product["price"] * float(num_items)
                 
