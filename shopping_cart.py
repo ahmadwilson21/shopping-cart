@@ -211,6 +211,7 @@ if print_choice.lower() == "y":
     #breakpoint()
     with open(file_name, "w") as file: # "w" means "open the file for writing"
        file.write(final_receipt)
+       print("Receipt generated in receipts folder")
     
 print("Have a good day\n")
 

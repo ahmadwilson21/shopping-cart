@@ -16,8 +16,8 @@ def get_spreadsheet():
     #
     # AUTHORIZATION
     #
-    json_path = os.environ.get("SHEETS_JSON","OOPS")
-    CREDENTIALS_FILEPATH = json_path
+    #json_path = os.environ.get("SHEETS_JSON","OOPS")
+    CREDENTIALS_FILEPATH = os.path.join(os.path.dirname(__file__), "auth", "spreadsheet_credentials.json")
 
     AUTH_SCOPE = [
         "https://www.googleapis.com/auth/spreadsheets", #> Allows read/write access to the user's sheets and their properties.
