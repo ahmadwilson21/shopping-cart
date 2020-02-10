@@ -9,7 +9,7 @@ import sendgrid
 from sendgrid.helpers.mail import * # source of Email, Content, Mail, etc.
 
 def sendEmail(toEmail, prompt):
-
+    
     #load_dotenv()
 
     SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY", "OOPS, please set env var called 'SENDGRID_API_KEY'")
@@ -20,7 +20,7 @@ def sendEmail(toEmail, prompt):
     sg = sendgrid.SendGridAPIClient(apikey=SENDGRID_API_KEY)
 
     # COMPILE REQUEST PARAMETERS (PREPARE THE EMAIL)
-    
+
 
 
     from_email = Email(MY_EMAIL_ADDRESS)

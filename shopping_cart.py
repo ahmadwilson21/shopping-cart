@@ -11,6 +11,7 @@ from decimal import Decimal
 from send_email import *
 from spreadsheet import *
 
+
 load_dotenv()
 
 def to_usd(my_price):
@@ -32,8 +33,20 @@ def to_usd(my_price):
 #newDict = stats.to_dict("records")
 
 
-PRODUCTS_LIST = get_spreadsheet() #custom function that 
+newSheet = get_spreadsheet() #custom function that 
+PRODUCTS_LIST = newSheet.get_all_records()
 newDict = [d for d in PRODUCTS_LIST]
+
+while(True):
+    barcode = input("Please input barcodes as integers. Input DONE when finished")
+    if (barcode.upper() == "DONE"):
+        break
+    elif barcode.isnumeric() != True:
+        barcode = "Incorrect input. Please input barcodes as integers. Input DONE when finished"
+    elif barcode.isnumeric:
+        newDict.append(barcode)
+print(newDict)
+breakpoint()
 
 
 tester = newDict[1]

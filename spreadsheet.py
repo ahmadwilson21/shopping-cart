@@ -10,6 +10,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 #Custom function that returns a list of dictionaries from a google sheet
 def get_spreadsheet():
+    
     DOCUMENT_ID = os.environ.get("GOOGLE_SHEET_ID", "OOPS")
     SHEET_NAME = os.environ.get("SHEET_NAME", "Products")
 
@@ -17,7 +18,7 @@ def get_spreadsheet():
     # AUTHORIZATION
     #
     #json_path = os.environ.get("SHEETS_JSON","OOPS")
-    CREDENTIALS_FILEPATH = os.path.join(os.path.dirname(__file__), "auth", "spreadsheet_credentials.json")
+    CREDENTIALS_FILEPATH = os.path.join(os.path.dirname(__file__), "auth", "google_api_credentials.json")
 
     AUTH_SCOPE = [
         "https://www.googleapis.com/auth/spreadsheets", #> Allows read/write access to the user's sheets and their properties.
@@ -41,7 +42,7 @@ def get_spreadsheet():
     sheet = doc.worksheet(SHEET_NAME) #> <class 'gspread.models.Worksheet'>
 
     rows = sheet.get_all_records() #> <class 'list'>
-    return rows
+    return sheet
     """
     DOCUMENT_ID = os.environ.get("NEW_SHEET_ID", "OOPS")
     SHEET_NAME = os.environ.get("SHEET_NAME", "Products")
