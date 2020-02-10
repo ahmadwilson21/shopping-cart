@@ -32,8 +32,8 @@ def to_usd(my_price):
 #newDict = stats.to_dict("records")
 
 
-sheets_products = get_spreadsheet()
-newDict = [d for d in sheets_products]
+PRODUCTS_LIST = get_spreadsheet() #custom function that 
+newDict = [d for d in PRODUCTS_LIST]
 
 
 tester = newDict[1]
@@ -47,8 +47,8 @@ id_list = [str(d["id"]) for d in newDict]
 #print (id_list)
 product_list=[]
 while (True):
-    identifier = input("Please input a product identifier. Enter 0 when finished.\t")
-    if (identifier == "0"):
+    identifier = input("Please input a product identifier. Enter DONE when finished.\t")
+    if (identifier.upper()== "DONE"):
         break
     elif identifier not in id_list:
         print("Sorry you entered the wrong ID. Try again")
@@ -94,12 +94,14 @@ products = [
 #print(products)
 # pprint(products)
 
+
 def receipt_generator(list):
     now = datetime.datetime.now()
     a = """---------------------------------\n"""
     a= a+ "GEORGETOWN GROCERS\n"
     a = a+ "WWW.GEORGETOWN-GROCERS.COM\n---------------------------------\n"
-    a = a + "CHECKOUT AT: " + now.strftime("%Y-%m-%d %I:%M %p" + "\n")
+    receipt_time = now.strftime("%Y-%m-%d %I:%M %p" + "\n")
+    a = a + "CHECKOUT AT: " + receipt_time
     a = a + "---------------------------------\nSELECTED PRODUCTS:"
 
     price = 0
@@ -185,14 +187,32 @@ def receipt_generator(list):
 
 #receipt_generator(product_list)
 #print ("STARTING A ")
-print (receipt_generator(product_list))
-email_choice = input("Would you like to receive a receipt via email?\nEnter y/n\t")
+receipt_time = ""
+now = datetime.datetime.now()
+receipt_time = now.strftime("%Y-%m-%d-%H-%M-%S-%f")
 
-if (email_choice == "y"):
+
+
+final_receipt = receipt_generator(product_list)
+print (final_receipt)
+email_choice = input("Would you like to receive a receipt via email?\tEnter y/n\t")
+
+if (email_choice.lower() == "y"):
     customer_email = input("Enter your email address:\t")
     sendEmail(customer_email, receipt_generator(product_list))
 else:
-    print("Have a great day!!!")
+    print("\n")
+
+print_choice = input("Would you like a physical copy of the receipt?\tEnter y/n\t")
+#print(file_name)
+if print_choice.lower() == "y":
+    file_name = os.path.join(os.path.dirname(__file__), "receipts", receipt_time + ".txt") # a relative filepath
+    #print(file_name)
+    #breakpoint()
+    with open(file_name, "w") as file: # "w" means "open the file for writing"
+       file.write(final_receipt)
+    
+print("Have a good day\n")
 
 
 #print("---------------------------------")
@@ -221,4 +241,4 @@ else:
 #> TOTAL: $66.59
 #> ---------------------------------
 #> THANKS, SEE YOU AGAIN SOON!
-#> ---------------------------------
+#> ---------------------------------CREDENTIALS_FILEPATH = os.path.join(os.path.dirname(__file__), "auth", "sheets-test-267401-1f8951c41319.json")

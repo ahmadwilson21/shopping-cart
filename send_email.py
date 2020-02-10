@@ -20,8 +20,8 @@ def sendEmail(toEmail, prompt):
     sg = sendgrid.SendGridAPIClient(apikey=SENDGRID_API_KEY)
 
     # COMPILE REQUEST PARAMETERS (PREPARE THE EMAIL)
+    
 
-        
 
     from_email = Email(MY_EMAIL_ADDRESS)
     to_email = Email(toEmail)
