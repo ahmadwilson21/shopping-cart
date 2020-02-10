@@ -108,6 +108,16 @@ while (True):
         matching_products = [p for p in PRODUCTS_LIST if str(p["id"]) == str(identifier)]
         #print (matching_products)
         matching_product = matching_products[0]
+        if matching_product["price_per"] == "pound":
+            num_items = (input("Enter pounds of " + matching_product["name"] + "\t"))
+           # while num_items.isnumeric()!= True: #include decimal of this
+            matching_product["price"] = matching_product["price"] * float(num_items)
+                
+                #num_items = (input("Bad Input. Enter number of " + matching_product["name"] + "\t"))
+            #for i in range(0,int(num_items)):
+            #    print(str(i+1) + " item")
+            #    product_list.append(matching_product)
+        
         product_list.append(matching_product)
 
         #print (str(matching_product["id"]) + " "+ str(matching_product["name"])+ " " + str(matching_product["price"])+ " ")
