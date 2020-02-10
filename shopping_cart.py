@@ -35,38 +35,77 @@ def to_usd(my_price):
 
 newSheet = get_spreadsheet() #custom function that 
 PRODUCTS_LIST = newSheet.get_all_records()
-newDict = [d for d in PRODUCTS_LIST]
+newDict = [str(d["id"]) for d in PRODUCTS_LIST]
+print (newDict)
+#dict = newDict[0]
+#print (type(dict))
+#breakpoint()
+num_rows = len(PRODUCTS_LIST) + 1
+print(num_rows)
 
-while(True):
-    barcode = input("Please input barcodes as integers. Input DONE when finished")
-    if (barcode.upper() == "DONE"):
-        break
-    elif barcode.isnumeric() != True:
-        barcode = "Incorrect input. Please input barcodes as integers. Input DONE when finished"
-    elif barcode.isnumeric:
-        newDict.append(barcode)
-print(newDict)
-breakpoint()
+### THIS while loop allows you to input a new barcode MAY work with barcode scanners
+input_qualifier = input("Would you like to add a new product to the directory?\tEnter y/n\t")
+if (input_qualifier.lower() == "y"):
+
+    while(True):
+
+        barcode = str(input("Please input barcodes as integers. Input DONE when finished\t"))
+        if (barcode.upper() == "DONE"):
+            break
+
+        elif barcode.isnumeric() != True or (barcode) in newDict:
+            barcode = input("Incorrect input. Please input barcodes as integers. Input DONE when finished\t")
+
+        elif barcode.isnumeric: #and barcode not in [d["id"] for d in newDict]:
+            print("Adding ", barcode)
+            name = input("Input the product's name\t")
+            department = input("Input the product's department\t")
+            price = float(input("Input the product's price in the form (0.00) \t"))
+            #while price is not float():
+            price_per = input("Input how the item is priced. Enter 'pound' or 'item'\t")
+            while price_per.lower() != "pound" and price_per.lower()!= "item": 
+                price_per = input("Try again. Input how the item is priced. Enter 'pound' or 'item'\t")
+            next_row = {
+            'id': barcode, 
+            'name': name, 
+            'department': department, 
+            'price': price,
+            'availability date': datetime.datetime.now().strftime("%Y-%m-%d"),
+            'price_per': price_per
+            }
+            PRODUCTS_LIST.append(next_row)
+            next_row = list(next_row.values())
 
 
-tester = newDict[1]
-identifier = "-1"
+            num_rows = num_rows + 1
+            newSheet.insert_row(next_row, num_rows)
+elif input_qualifier.lower() != "n" and input_qualifier.lower()!= "y":
+    print("Entered the wrong character. Moving on\n")\
+
+
+#print(PRODUCTS_LIST)
+#breakpoint()
+
+
+#tester = newDict[1]
+#identifier = "-1"
 #matchingProduct = p for p in newDict if p["id"] = identifier
 #newList = []
 #matching_products = []
 #breakpoint()
 #while identifier != "0":
-id_list = [str(d["id"]) for d in newDict]
+#id_list = [str(d["id"]) for d in newDict]
 #print (id_list)
+newDict = [str(d["id"]) for d in PRODUCTS_LIST]
 product_list=[]
 while (True):
     identifier = input("Please input a product identifier. Enter DONE when finished.\t")
     if (identifier.upper()== "DONE"):
         break
-    elif identifier not in id_list:
+    elif identifier not in newDict:
         print("Sorry you entered the wrong ID. Try again")
     else:
-        matching_products = [p for p in newDict if str(p["id"]) == str(identifier)]
+        matching_products = [p for p in PRODUCTS_LIST if str(p["id"]) == str(identifier)]
         #print (matching_products)
         matching_product = matching_products[0]
         product_list.append(matching_product)
