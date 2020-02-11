@@ -1,8 +1,5 @@
 # shopping_cart.py
 
-#from pprint import pprint
-#from send_email import*
-
 import pandas as pd
 import datetime
 import os
@@ -24,47 +21,78 @@ def to_usd(my_price):
     """
     return f"${my_price:,.2f}" #> $12,000.71
 
+def receipt_generator(list):
+    """
+    This function takes a list as a parameter filled with all of the 
+    items bought by a particular customer. The function then generates 
+    a formatted receipt and returns the text as a string which can then
+    be printed, emailed, etc.
+    """
 
-#OLD WAY OF USING os environ files
+    now = datetime.datetime.now()
+    receipt = """---------------------------------\n"""
+    receipt = receipt + "GEORGETOWN GROCERS\n"
+    receipt = receipt + "WWW.GEORGETOWN-GROCERS.COM\n---------------------------------\n"
+    receipt_time = now.strftime("%Y-%m-%d %I:%M %p" + "\n")
+    receipt = receipt + "CHECKOUT AT: " + receipt_time
+    receipt = receipt + "---------------------------------\nSELECTED PRODUCTS:"
+
+    price = 0
+    price = float(price)
+
+    for p in product_list:
+        receipt = receipt + ("\n... " + p["name"] + " (" + to_usd(p["price"]) +")")
+        price = price + p["price"]
+    
+    receipt = receipt +"\n---------------------------------\nSUBTOTAL: "
+    receipt = receipt + to_usd(price)
 
 
-#fileName = os.environ.get("CSV_FILE_PATH")
-#stats = pd.read_csv(fileName)
-#newDict = stats.to_dict("records")
+    tax_rate= " "
+    tax_rate = os.environ.get("CUSTOM_TAX") #user entered Tax Rate
+    tax_rate = float(tax_rate)   
+    tax_price = price* (tax_rate)
+ 
+    receipt = receipt + "\nTAX: " + to_usd(tax_price)
+    receipt = receipt + "\nTOTAL: " + to_usd(price+tax_price)
+    receipt = receipt + "\n---------------------------------"
+    receipt = receipt + "\nTHANKS, SEE YOU AGAIN SOON"
+    receipt = receipt + "\n---------------------------------"
+
+    return receipt
 
 
-newSheet = get_spreadsheet() #custom function that 
-PRODUCTS_LIST = newSheet.get_all_records()
-newDict = [str(d["id"]) for d in PRODUCTS_LIST]
-print (newDict)
-#dict = newDict[0]
-#print (type(dict))
-#breakpoint()
-num_rows = len(PRODUCTS_LIST) + 1
-print(num_rows)
+print("\nWelcome to the Georgetown Grocer Receipt Generator")
+newSheet = get_spreadsheet() #> <class spreadsheet.py> 
+PRODUCTS_LIST = newSheet.get_all_records() ##> <class gspread> generates a list from the googlesheet 
+newDict = [str(d["id"]) for d in PRODUCTS_LIST] #This places all the ids into a list so we can easily determine if an item is in the list
+num_rows = len(PRODUCTS_LIST) + 1 #Adds an extra row to account for the headings
 
-### THIS while loop allows you to input a new barcode MAY work with barcode scanners
-input_qualifier = input("Would you like to add a new product to the directory?\tEnter y/n\t")
+
+
+
+### THIS code allows you to manually input a new barcode and the information for a new product
+input_qualifier = input("Would you like to add a new product to the spreadsheet database?\tEnter y/n\t")
 if (input_qualifier.lower() == "y"):
 
     while(True):
-
         barcode = str(input("Please input barcodes as integers. Input DONE when finished\t"))
         if (barcode.upper() == "DONE"):
             break
-
-        elif barcode.isnumeric() != True or (barcode) in newDict:
+        elif barcode.isnumeric() != True or barcode in newDict: # if barcode not a number or is already a created product
             barcode = input("Incorrect input. Please input barcodes as integers. Input DONE when finished\t")
-
-        elif barcode.isnumeric: #and barcode not in [d["id"] for d in newDict]:
+        elif barcode.isnumeric: #if its a number then it will add the barcode
             print("Adding ", barcode)
             name = input("Input the product's name\t")
             department = input("Input the product's department\t")
-            price = float(input("Input the product's price in the form (0.00) \t"))
-            #while price is not float():
+            price = float(input("Input the product's price as a decimal in the form (0.00) \t"))
             price_per = input("Input how the item is priced. Enter 'pound' or 'item'\t")
+
             while price_per.lower() != "pound" and price_per.lower()!= "item": 
                 price_per = input("Try again. Input how the item is priced. Enter 'pound' or 'item'\t")
+
+            #nextrow creates an entire new row with the new attributes entered by the user
+            # adapted from https://github.com/prof-rossetti/intro-to-python/blob/master/notes/python/packages/gspread.md
             next_row = {
             'id': barcode, 
             'name': name, 
@@ -73,31 +101,28 @@ if (input_qualifier.lower() == "y"):
             'availability date': datetime.datetime.now().strftime("%Y-%m-%d"),
             'price_per': price_per
             }
-            PRODUCTS_LIST.append(next_row)
-            next_row = list(next_row.values())
+
+            PRODUCTS_LIST.append(next_row) #adds the new row to product list
+            next_row = list(next_row.values()) #collects values in order to add to the google sheet
+            num_rows = num_rows + 1 #the new location of the object is the last row position + 1
+            newSheet.insert_row(next_row, num_rows) #inserts new row into sheet
 
 
-            num_rows = num_rows + 1
-            newSheet.insert_row(next_row, num_rows)
-elif input_qualifier.lower() != "n" and input_qualifier.lower()!= "y":
+
+
+#if you enter the wrong character we just move on
+elif input_qualifier.lower() != "n" and input_qualifier.lower()!= "y": 
     print("Entered the wrong character. Moving on\n")\
 
 
-#print(PRODUCTS_LIST)
-#breakpoint()
+
+newDict = [str(d["id"]) for d in PRODUCTS_LIST] #This updates newDict with the new values added to the sheet
+product_list=[] #this list will hold the items scanned by the cashier
 
 
-#tester = newDict[1]
-#identifier = "-1"
-#matchingProduct = p for p in newDict if p["id"] = identifier
-#newList = []
-#matching_products = []
-#breakpoint()
-#while identifier != "0":
-#id_list = [str(d["id"]) for d in newDict]
-#print (id_list)
-newDict = [str(d["id"]) for d in PRODUCTS_LIST]
-product_list=[]
+
+
+#This loop has the cashier input all the products that the customer will buy and breaks after entering "done"
 while (True):
     identifier = input("Please input a product identifier. Enter DONE when finished.\t")
     if (identifier.upper()== "DONE"):
@@ -106,202 +131,43 @@ while (True):
         print("Sorry you entered the wrong ID. Try again")
     else:
         matching_products = [p for p in PRODUCTS_LIST if str(p["id"]) == str(identifier)]
-        #print (matching_products)
         matching_product = matching_products[0]
         if matching_product["price_per"] == "pound":
-            num_items = (input("Enter pounds of " + matching_product["name"] + "as an integer or float\t"))
-           # while num_items.isnumeric()!= True: #include decimal of this
-            matching_product["price"] = matching_product["price"] * float(num_items)
+            num_items = (input("Enter pounds of " + matching_product["name"] + "as an integer or decimal\t"))
+            matching_product["price"] = matching_product["price"] * float(num_items) #alters the price of said item to reflect price in pounds
                 
-                #num_items = (input("Bad Input. Enter number of " + matching_product["name"] + "\t"))
-            #for i in range(0,int(num_items)):
-            #    print(str(i+1) + " item")
-            #    product_list.append(matching_product)
         
         product_list.append(matching_product)
 
-        #print (str(matching_product["id"]) + " "+ str(matching_product["name"])+ " " + str(matching_product["price"])+ " ")
-
-
-        
-        #print("Inside for loop")
-        #print
-    #newList.append(newDict.)
-    
     
 
-products = [
-    {"id":1, "name": "Chocolate Sandwich Cookies", "department": "snacks", "aisle": "cookies cakes", "price": 3.50},
-    {"id":2, "name": "All-Seasons Salt", "department": "pantry", "aisle": "spices seasonings", "price": 4.99},
-    {"id":3, "name": "Robust Golden Unsweetened Oolong Tea", "department": "beverages", "aisle": "tea", "price": 2.49},
-    {"id":4, "name": "Smart Ones Classic Favorites Mini Rigatoni With Vodka Cream Sauce", "department": "frozen", "aisle": "frozen meals", "price": 6.99},
-    {"id":5, "name": "Green Chile Anytime Sauce", "department": "pantry", "aisle": "marinades meat preparation", "price": 7.99},
-    {"id":6, "name": "Dry Nose Oil", "department": "personal care", "aisle": "cold flu allergy", "price": 21.99},
-    {"id":7, "name": "Pure Coconut Water With Orange", "department": "beverages", "aisle": "juice nectars", "price": 3.50},
-    {"id":8, "name": "Cut Russet Potatoes Steam N' Mash", "department": "frozen", "aisle": "frozen produce", "price": 4.25},
-    {"id":9, "name": "Light Strawberry Blueberry Yogurt", "department": "dairy eggs", "aisle": "yogurt", "price": 6.50},
-    {"id":10, "name": "Sparkling Orange Juice & Prickly Pear Beverage", "department": "beverages", "aisle": "water seltzer sparkling water", "price": 2.99},
-    {"id":11, "name": "Peach Mango Juice", "department": "beverages", "aisle": "refrigerated", "price": 1.99},
-    {"id":12, "name": "Chocolate Fudge Layer Cake", "department": "frozen", "aisle": "frozen dessert", "price": 18.50},
-    {"id":13, "name": "Saline Nasal Mist", "department": "personal care", "aisle": "cold flu allergy", "price": 16.00},
-    {"id":14, "name": "Fresh Scent Dishwasher Cleaner", "department": "household", "aisle": "dish detergents", "price": 4.99},
-    {"id":15, "name": "Overnight Diapers Size 6", "department": "babies", "aisle": "diapers wipes", "price": 25.50},
-    {"id":16, "name": "Mint Chocolate Flavored Syrup", "department": "snacks", "aisle": "ice cream toppings", "price": 4.50},
-    {"id":17, "name": "Rendered Duck Fat", "department": "meat seafood", "aisle": "poultry counter", "price": 9.99},
-    {"id":18, "name": "Pizza for One Suprema Frozen Pizza", "department": "frozen", "aisle": "frozen pizza", "price": 12.50},
-    {"id":19, "name": "Gluten Free Quinoa Three Cheese & Mushroom Blend", "department": "dry goods pasta", "aisle": "grains rice dried goods", "price": 3.99},
-    {"id":20, "name": "Pomegranate Cranberry & Aloe Vera Enrich Drink", "department": "beverages", "aisle": "juice nectars", "price": 4.25}
-] # based on data from Instacart: https://www.instacart.com/datasets/grocery-shopping-2017
 
-#print(products)
-# pprint(products)
-
-
-def receipt_generator(list):
-    now = datetime.datetime.now()
-    a = """---------------------------------\n"""
-    a= a+ "GEORGETOWN GROCERS\n"
-    a = a+ "WWW.GEORGETOWN-GROCERS.COM\n---------------------------------\n"
-    receipt_time = now.strftime("%Y-%m-%d %I:%M %p" + "\n")
-    a = a + "CHECKOUT AT: " + receipt_time
-    a = a + "---------------------------------\nSELECTED PRODUCTS:"
-
-    price = 0
-    price = float(price)
-
-    for p in product_list:
-        a= a+("\n... " + p["name"] + " (" + to_usd(p["price"]) +")")
-        price = price + p["price"]
-    
-    a= a+"\n---------------------------------\nSUBTOTAL: "
-    a= a+ to_usd(price)
-
-    """
-    print("---------------------------------")
-    print("SUBTOTAL: " + to_usd(price))
-    """
-    #tax_price = Decimal
-    #load_dotenv()
-    tax_rate= " "
-    tax_rate = os.environ.get("CUSTOM_TAX")
-    #tax
-    #tax_rate = str(tax_rate)
-    #breakpoint()
-    #breakpoint()
-    tax_rate = float(tax_rate)
-    
-    tax_price = price* (tax_rate)
-    #tax_price = to_usd(tax_price)
-    a = a + "\nTAX: " + to_usd(tax_price)
-
-    """
-    print("TAX: " + to_usd(tax_price))
-    """
-
-    a = a + "\nTOTAL: " + to_usd(price+tax_price)
-    a = a + "\n---------------------------------"
-    a = a + "\nTHANKS, SEE YOU AGAIN SOON"
-    a = a + "\n---------------------------------"
-
-    """
-    print("TOTAL: " + to_usd(price+tax_price))
-    print("---------------------------------")
-    print("THANKS, SEE YOU AGAIN SOON")
-    print("---------------------------------")
-    
-    #now = datetime.datetime.strftime("%Y, %m", "%d", "%I", "%M", "%p")
-
-
-    print("---------------------------------")
-    print("GEORGETOWN GROCERS")
-    print("WWW.GEORGETOWN-GROCERS.COM")
-    print("---------------------------------")
-    print("CHECKOUT AT: ", now.strftime("%Y-%m-%d %I:%M %p"))
-    print("---------------------------------")
-    print("SELECTED PRODUCTS:")
-    """
-    """
-    price = 0
-    #price = Decimal(price)
-    #price = to_usd(price)
-    
-    for p in product_list:
-        print("... " + p["name"] + " (" + to_usd(p["price"]) +")")
-        price = price + p["price"]
-    
-    tax_price = price* (.085)
-    #price = to_usd(price)
-    #price = round(price,2)
-    print("---------------------------------")
-    print("SUBTOTAL: " + to_usd(price))
-    #tax_price = Decimal
-    
-
-    #tax_price = to_usd(tax_price)
-    print("TAX: " + to_usd(tax_price))
-    print("TOTAL: " + to_usd(price+tax_price))
-    print("---------------------------------")
-    print("THANKS, SEE YOU AGAIN SOON")
-    print("---------------------------------")
-    """
-    return a
-    
-
-#receipt_generator(product_list)
-#print ("STARTING A ")
+#Generates the receipt time in order to be used as the filename to be printed in a txt file
 receipt_time = ""
 now = datetime.datetime.now()
 receipt_time = now.strftime("%Y-%m-%d-%H-%M-%S-%f")
 
 
-
-final_receipt = receipt_generator(product_list)
+#Generates and prints final receipt
+final_receipt = receipt_generator(product_list) #> <class shopping_cart.py> 
 print (final_receipt)
-email_choice = input("Would you like to receive a receipt via email?\tEnter y/n\t")
 
+
+#Enter an email address to send the receipt
+email_choice = input("Would you like to receive a receipt via email?\tEnter y/n\t")
 if (email_choice.lower() == "y"):
     customer_email = input("Enter your email address:\t")
-    sendEmail(customer_email, receipt_generator(product_list))
+    sendEmail(customer_email, receipt_generator(product_list)) #> <class send_email.py> 
 else:
     print("\n")
 
+
+#Prints a physical copy of the receipt with the time the receipt was created as the title
 print_choice = input("Would you like a physical copy of the receipt?\tEnter y/n\t")
-#print(file_name)
 if print_choice.lower() == "y":
     file_name = os.path.join(os.path.dirname(__file__), "receipts", receipt_time + ".txt") # a relative filepath
-    #print(file_name)
-    #breakpoint()
     with open(file_name, "w") as file: # "w" means "open the file for writing"
        file.write(final_receipt)
        print("Receipt generated in receipts folder")
     
-print("Have a good day\n")
-
-
-#print("---------------------------------")
-#print("Generating receipt to email")
-#print("---------------------------------")
-#sendEmail("asw99@georgetown.edu", receipt_generator(product_list))
-# TODO: write some Python code here to produce the desired output
-
-#> ---------------------------------
-#> GREEN FOODS GROCERY
-#> WWW.GREEN-FOODS-GROCERY.COM
-#> ---------------------------------
-#> CHECKOUT AT: 2019-06-06 11:31 AM
-#> ---------------------------------
-#> SELECTED PRODUCTS:
-#>  ... Chocolate Sandwich Cookies ($3.50)
-#>  ... Cut Russet Potatoes Steam N' Mash ($4.25)
-#>  ... Dry Nose Oil ($21.99)
-#>  ... Cut Russet Potatoes Steam N' Mash ($4.25)
-#>  ... Cut Russet Potatoes Steam N' Mash ($4.25)
-#>  ... Mint Chocolate Flavored Syrup ($4.50)
-#>  ... Chocolate Fudge Layer Cake ($18.50)
-#> ---------------------------------
-#> SUBTOTAL: $61.24
-#> TAX: $5.35
-#> TOTAL: $66.59
-#> ---------------------------------
-#> THANKS, SEE YOU AGAIN SOON!
-#> ---------------------------------CREDENTIALS_FILEPATH = os.path.join(os.path.dirname(__file__), "auth", "sheets-test-267401-1f8951c41319.json")
+print("\nHave a good day\n")

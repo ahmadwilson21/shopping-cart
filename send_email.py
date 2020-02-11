@@ -9,8 +9,9 @@ import sendgrid
 from sendgrid.helpers.mail import * # source of Email, Content, Mail, etc.
 
 def sendEmail(toEmail, prompt):
-    
-    #load_dotenv()
+    """
+    This code was taken from a template
+    """
 
     SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY", "OOPS, please set env var called 'SENDGRID_API_KEY'")
     MY_EMAIL_ADDRESS = os.environ.get("MY_EMAIL_ADDRESS", "OOPS, please set env var called 'MY_EMAIL_ADDRESS'")
@@ -28,11 +29,7 @@ def sendEmail(toEmail, prompt):
     subject = "Georgetown-Grocers Receipt"
     message_text = prompt
     content = Content("text/plain", message_text)
-    #breakpoint()
     mail = Mail(from_email, subject, to_email, content)
-    #personalization = Personalization()
-    #mail.personalizations[0].add_bcc(Email(input("Input bcc email\t")))
-    #mail.add_personalization(personalization)
 
     # ISSUE REQUEST (SEND EMAIL)
 

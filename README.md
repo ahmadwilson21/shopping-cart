@@ -1,12 +1,27 @@
-# shopping-cart
+# Shopping-Cart
 
-Setup:
+## Setup:
+
+## Installation
+
+Fork it, clone it, nav from command line:
+```sh
+cd my-repo
+```
+## SetupPackages to install?
+Virtual environment?
+## Usage
+
+```sh
+python path/to/your/file.py
+```
+
 conda create -n shopping-env python=3.7 # (first time only)
 conda activate shopping-env
 
 pip install -r requirements.txt
 
-AFTER INSTALLATION
+### Google Sheets API Installation
 
 Downloading API Credentials
 
@@ -21,7 +36,6 @@ From either API page, or from the API Credentials page, follow a process to crea
 
 The suggested credentials will be for a service account. Follow the prompt to create a new service account with a role of: "Project" > "Editor", and create credentials for that service account. Download the resulting .json file and store it in your project repo in a location called "auth/google_api_credentials.json"
 
-Find your .json file and paste the path into the environment variable SHEETS_JSON
 
 
 
