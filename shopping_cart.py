@@ -23,11 +23,39 @@ def to_usd(my_price):
 
 def receipt_generator(list):
     """
-    This function takes a list as a parameter filled with all of the 
-    items bought by a particular customer. The function then generates 
-    a formatted receipt and returns the text as a string which can then
-    be printed, emailed, etc.
-    """
+    Converts a list of dictionary items with a 'name' and 'price' identifier into
+    a formatted receipt with calculated totals with tax and returns the text as a string.
+
+    Params: 
+        list (list)
+
+    Example: 
+        receipt_generator([
+                            {'id': 1, 
+                             'name': 'Product A',
+                             'department': 'snacks', 
+                             'price': 4.99, 
+                             'availability_date': '2019-01-01', 
+                             'price_per': 'item'
+                             }])
+    
+    Returns:
+        "---------------------------------
+        GEORGETOWN GROCERS
+        WWW.GEORGETOWN-GROCERS.COM
+        ---------------------------------
+        CHECKOUT AT: 2020-04-11 06:54 PM
+        ---------------------------------
+        SELECTED PRODUCTS:
+        ... Product A ($4.99)
+        ---------------------------------
+        SUBTOTAL: $4.99
+        TAX: $4.24
+        TOTAL: $9.23
+        ---------------------------------
+        THANKS, SEE YOU AGAIN SOON
+        ---------------------------------"
+        """
 
     now = datetime.datetime.now()
     receipt = """---------------------------------\n"""
@@ -40,7 +68,7 @@ def receipt_generator(list):
     price = 0
     price = float(price)
 
-    for p in product_list:
+    for p in list:
         receipt = receipt + ("\n... " + p["name"] + " (" + to_usd(p["price"]) +")")
         price = price + p["price"]
     
@@ -117,7 +145,7 @@ elif input_qualifier.lower() != "n" and input_qualifier.lower()!= "y":
 
 
 newDict = [str(d["id"]) for d in PRODUCTS_LIST] #This updates newDict with the new values added to the sheet
-product_list=[] #this list will hold the items scanned by the cashier
+scanned_list=[] #this list will hold the items scanned by the cashier
 
 
 
@@ -137,7 +165,7 @@ while (True):
             matching_product["price"] = matching_product["price"] * float(num_items) #alters the price of said item to reflect price in pounds
                 
         
-        product_list.append(matching_product)
+        scanned_list.append(matching_product)
 
     
 
@@ -149,7 +177,7 @@ receipt_time = now.strftime("%Y-%m-%d-%H-%M-%S-%f")
 
 
 #Generates and prints final receipt
-final_receipt = receipt_generator(product_list) #> <class shopping_cart.py> 
+final_receipt = receipt_generator(scanned_list) #> <class shopping_cart.py> 
 print (final_receipt)
 
 
@@ -157,7 +185,7 @@ print (final_receipt)
 email_choice = input("Would you like to receive a receipt via email?\tEnter y/n\t")
 if (email_choice.lower() == "y"):
     customer_email = input("Enter your email address:\t")
-    sendEmail(customer_email, receipt_generator(product_list)) #> <class send_email.py> 
+    sendEmail(customer_email, receipt_generator(scanned_list)) #> <class send_email.py> 
 else:
     print("\n")
 

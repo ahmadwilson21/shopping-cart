@@ -10,7 +10,16 @@ from sendgrid.helpers.mail import * # source of Email, Content, Mail, etc.
 
 def sendEmail(toEmail, prompt):
     """
-    This code was taken from a template
+    Sends an email to a specified email address using the Sendgrid API
+
+    Params: 
+        toEmail(string) the email that you want to send the message to
+        prompt(string) the message that you want to send
+    
+    Example: sendEmail("me@123.com", "Reminder, this is an example email")
+
+    Returns: 202 (if email was sent successfully)
+
     """
 
     SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY", "OOPS, please set env var called 'SENDGRID_API_KEY'")
@@ -48,3 +57,4 @@ def sendEmail(toEmail, prompt):
     pp.pprint(dict(response.headers))
     print("BODY:")
     print(response.body) #> this might be empty. it's ok.)
+    return(response.status_code)
