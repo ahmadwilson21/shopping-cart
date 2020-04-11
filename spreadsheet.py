@@ -10,9 +10,13 @@ from oauth2client.service_account import ServiceAccountCredentials
 #Custom function that returns a list of dictionaries from a google sheet
 def get_spreadsheet():
     """
-    This function will give you access to a google sheet. It returns the google sheet from the unique website
-    identifier that you input in the environment variable. Also you must have the service key .json file
-    downloaded in a folder called auth named google_api_credentials.json  
+    Provides access to a google sheet. It returns the google sheet from the unique website
+    identifier that was input in the GOOGLE_SHEET_ID env variable.
+
+    Requirements: Google API credentials service key saved as a .json file
+    named google_api_credentials.json and downloaded into the folder named auth
+
+    Returns: type = 'gspread.models.Worksheet'>
     """
 
     DOCUMENT_ID = os.environ.get("GOOGLE_SHEET_ID", "OOPS")
