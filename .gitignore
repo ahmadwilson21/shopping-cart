@@ -6,7 +6,10 @@ __pycache__/
 # C extensions
 *.so
 *.DS_STORE
-*.yml
+
+__pycache__
+.pytest_cache
+
 
 # Distribution / packaging
 .Python
