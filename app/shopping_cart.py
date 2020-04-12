@@ -2,12 +2,9 @@
 
 from dotenv import load_dotenv
 import datetime
-#import pytest
 import os
 import csv
 from decimal import Decimal
-from app.send_email import sendEmail
-from app.spreadsheet import get_spreadsheet
 
 
 
@@ -15,12 +12,32 @@ load_dotenv()
 
 def human_friendly_timestamp(my_time):
     """
-    Todo fill out docstring
+    Converts datetime object into a readable format
+    Params: my_time (datetime.datetime object)
+
+    Example: 
+    human_friendly_timestamp(datetime.datetime(
+        year=2020, 
+        month = 1, 
+        day =1, 
+        hour = 0, 
+        minute = 0))
+    
+    Returns:
+    "2020-01-01 12:00 AM"
+
     """
     return my_time.strftime("%Y-%m-%d %I:%M %p")
 
 def product_finder(product_id, list):
-    return [p for p in list if str(p["id"]) == product_id]
+    """
+    Finds an item in a list given its id 
+    Params: product_id (int), list (list)
+    Example: product_finder(2, [{id: 2, name: "Product 1"}])
+    Returns: {id: 2, name: "Product 1"}
+    """
+    product_list = [p for p in list if str(p["id"]) == str(product_id)]
+    return product_list[0]
 
 def to_usd(my_price):
     """
@@ -72,7 +89,7 @@ def receipt_generator(list):
     receipt = """---------------------------------\n"""
     receipt = receipt + "GEORGETOWN GROCERS\n"
     receipt = receipt + "WWW.GEORGETOWN-GROCERS.COM\n---------------------------------\n"
-    receipt_time = human_friendly_timestamp(now) #+ "\n")
+    receipt_time = human_friendly_timestamp(now)
     receipt = receipt + "CHECKOUT AT: " + receipt_time + "\n"
     receipt = receipt + "---------------------------------\nSELECTED PRODUCTS:"
 
@@ -102,19 +119,22 @@ def receipt_generator(list):
 
 
 if __name__ == "__main__":
+    from send_email import sendEmail
+    from spreadsheet import get_spreadsheet
+
     print("\nWelcome to the Georgetown Grocer Receipt Generator")
     newSheet = get_spreadsheet() #> <class spreadsheet.py> 
     PRODUCTS_LIST = newSheet.get_all_records() ##> <class gspread> generates a list from the googlesheet 
     newDict = [str(d["id"]) for d in PRODUCTS_LIST] #This places all the ids into a list so we can easily determine if an item is in the list
     num_rows = len(PRODUCTS_LIST) + 1 #Adds an extra row to account for the headings
-    
-    
-    
-    
+
+ 
+
+
     ### THIS code allows you to manually input a new barcode and the information for a new product
     input_qualifier = input("Would you like to add a new product to the spreadsheet database?\tEnter y/n\t")
     if (input_qualifier.lower() == "y"):
-    
+
         while(True):
             barcode = str(input("Please input barcodes as integers. Input DONE when finished\t"))
             if (barcode.upper() == "DONE"):
@@ -127,10 +147,10 @@ if __name__ == "__main__":
                 department = input("Input the product's department\t")
                 price = float(input("Input the product's price as a decimal in the form (0.00) \t"))
                 price_per = input("Input how the item is priced. Enter 'pound' or 'item'\t")
-    
+
                 while price_per.lower() != "pound" and price_per.lower()!= "item": 
                     price_per = input("Try again. Input how the item is priced. Enter 'pound' or 'item'\t")
-    
+
                 #nextrow creates an entire new row with the new attributes entered by the user
                 # adapted from https://github.com/prof-rossetti/intro-to-python/blob/master/notes/python/packages/gspread.md
                 next_row = {
@@ -141,27 +161,27 @@ if __name__ == "__main__":
                 'availability date': datetime.datetime.now().strftime("%Y-%m-%d"),
                 'price_per': price_per
                 }
-    
+
                 PRODUCTS_LIST.append(next_row) #adds the new row to product list
                 next_row = list(next_row.values()) #collects values in order to add to the google sheet
                 num_rows = num_rows + 1 #the new location of the object is the last row position + 1
                 newSheet.insert_row(next_row, num_rows) #inserts new row into sheet
-    
-    
-    
-    
+
+
+
+
     #if you enter the wrong character we just move on
     elif input_qualifier.lower() != "n" and input_qualifier.lower()!= "y": 
         print("Entered the wrong character. Moving on\n")\
-        
-        
-        
+
+
+
     newDict = [str(d["id"]) for d in PRODUCTS_LIST] #This updates newDict with the new values added to the sheet
     scanned_list=[] #this list will hold the items scanned by the cashier
-    
-    
-    
-    
+
+
+
+
     #This loop has the cashier input all the products that the customer will buy and breaks after entering "done"
     while (True):
         identifier = input("Please input a product identifier. Enter DONE when finished.\t")
@@ -170,30 +190,30 @@ if __name__ == "__main__":
         elif identifier not in newDict:
             print("Sorry you entered the wrong ID. Try again")
         else:
-            matching_products = product_finder(identifier, PRODUCTS_LIST)
-            matching_product = matching_products[0]
+            matching_product = product_finder(identifier, PRODUCTS_LIST)
+            #matching_product = matching_products[0]
             if matching_product["price_per"] == "pound":
                 num_items = (input("Enter pounds of " + matching_product["name"] + "as an integer or decimal\t"))
                 matching_product["price"] = matching_product["price"] * float(num_items) #alters the price of said item to reflect price in pounds
-                    
-            
+
+
             scanned_list.append(matching_product)
-    
-        
-    
-    
+
+
+
+
     #Generates the receipt time in order to be used as the filename to be printed in a txt file
-    
+
     receipt_time = ""
     now = datetime.datetime.now()
     receipt_time = now.strftime("%Y-%m-%d-%H-%M-%S-%f")
-    
-    
+
+
     #Generates and prints final receipt
     final_receipt = receipt_generator(scanned_list) #> <class shopping_cart.py> 
     print (final_receipt)
-    
-    
+
+
     #Enter an email address to send the receipt
     email_choice = input("Would you like to receive a receipt via email?\tEnter y/n\t")
     if (email_choice.lower() == "y"):
@@ -201,8 +221,8 @@ if __name__ == "__main__":
         sendEmail(customer_email, receipt_generator(scanned_list)) #> <class send_email.py> 
     else:
         print("\n")
-    
-    
+
+
     #Prints a physical copy of the receipt with the time the receipt was created as the title
     print_choice = input("Would you like a physical copy of the receipt?\tEnter y/n\t")
     if print_choice.lower() == "y":
@@ -210,5 +230,5 @@ if __name__ == "__main__":
         with open(file_name, "w") as file: # "w" means "open the file for writing"
            file.write(final_receipt)
            print("Receipt generated in receipts folder")
-        
+
     print("\nHave a good day\n")
