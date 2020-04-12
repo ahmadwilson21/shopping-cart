@@ -1,5 +1,4 @@
 from app.shopping_cart import to_usd, product_finder, human_friendly_timestamp
-from app.send_email import sendEmail
 import datetime
 import pytest
 
@@ -16,9 +15,6 @@ def test_to_usd():
 
     assert to_usd(2.555556) == "$2.56"
 
-def test_send_email():
-
-    assert sendEmail("asw99@georgetown.edu","Test Email") == 202
 
 def test_human_friendly_timestamp():
     
