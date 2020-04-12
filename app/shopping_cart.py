@@ -5,9 +5,7 @@ import datetime
 import os
 import csv
 from decimal import Decimal
-<<<<<<< cleanup
-=======
->>>>>>> master
+
 
 
 
