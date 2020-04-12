@@ -8,6 +8,7 @@ from decimal import Decimal
 
 
 
+
 load_dotenv()
 
 def human_friendly_timestamp(my_time):
@@ -116,6 +117,7 @@ def receipt_generator(list):
     receipt = receipt + "\n---------------------------------"
 
     return receipt
+
 
 
 if __name__ == "__main__":
