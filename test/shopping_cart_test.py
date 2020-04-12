@@ -1,6 +1,11 @@
+<<<<<<< HEAD
 from app.shopping_cart import to_usd, product_finder, human_friendly_timestamp
 import datetime
 import pytest
+=======
+from app.shopping_cart import to_usd, product_finder
+from app.send_email import sendEmail
+>>>>>>> master
 
 
 def test_to_usd():
@@ -13,6 +18,7 @@ def test_to_usd():
 
     assert to_usd(1234567890.678) == "$1,234,567,890.68"
 
+<<<<<<< HEAD
     assert to_usd(2.555556) == "$2.56"
 
 
@@ -36,3 +42,6 @@ def test_product_finder():
     assert matching_product_two["price"] == 4.99
     assert matching_product_three["id"] == 3
     
+=======
+    assert to_usd(2.555556) == "$2.56"
+>>>>>>> master
